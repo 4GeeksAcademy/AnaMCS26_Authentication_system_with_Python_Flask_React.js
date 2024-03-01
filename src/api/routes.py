@@ -35,14 +35,27 @@ def add_cors_headers(response):
    response.headers['Access-Control-Allow-Methods'] = 'GET,PUT,POST,DELETE'
    return response
 
-##@api.route('/users', methods=['GET'])
-##@jwt_required()
-##def handle_user():
-    ##current_user = get_jwt_identity()
-    ##user = User.query.filter_by(email=current_user).first()
-    ##if not user:
-       ## return jsonify({"msg": "Usuario no encontrado"}), 404
+@api.route("/user", methods=["POST"])
+def add_user():
+    email = request.json.get("email")
+    password = request.json.get("password")
+    is_active = True
 
-    ##users = User.query.all()
-   ## serialized_users = [user.serialize() for user in users]
-    ##return jsonify(serialized_users)
+    required_fields = [email, password, is_active]
+
+    if any(field is None for field in required_fields):
+        return jsonify({'error': 'You must provide an email and a password'}), 400
+    
+    user = User.query.filter_by(email=email).first()
+
+    if user:
+        return jsonify({"msg": "This user already has an account"}), 401
+    
+    try:
+        new_user = User(email=email, password=password, is_active=is_active)
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({'response': 'User added successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
