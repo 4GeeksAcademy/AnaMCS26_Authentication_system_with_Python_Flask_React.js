@@ -14,9 +14,9 @@ from flask_jwt_extended import JWTManager
 
 api = Blueprint('api', __name__)
 
-
+# Hay que modificar la URL de puerto 3000 (Nuestro front) en la línea 19 y 49
 # Allow CORS requests to this API
-CORS(api, resources={r"/api/*": {"origins": 'https://didactic-xylophone-q7qggvp74pxqh6q-3000.app.github.dev'}})
+CORS(api, resources={r"/api/*": {"origins": 'https://didactic-xylophone-q7qggvp74pxqh6q-3000.app.github.dev/'}})
 
 
 # Create a route to authenticate your users and return JWTs. The
@@ -46,7 +46,7 @@ def get_hello():
 
 @api.after_request
 def add_cors_headers(response):
-   response.headers['Access-Control-Allow-Origin'] = 'https://didactic-xylophone-q7qggvp74pxqh6q-3000.app.github.dev'
+   response.headers['Access-Control-Allow-Origin'] = 'https://didactic-xylophone-q7qggvp74pxqh6q-3000.app.github.dev/'
    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
    response.headers['Access-Control-Allow-Methods'] = 'GET,PUT,POST,DELETE'
    return response
